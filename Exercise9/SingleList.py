@@ -61,10 +61,15 @@ class SingleList:
     # Dla pustej listy rzuca wyjątek ValueError.
 
     def merge(self, other):
-        while other.length != 0:
-            x = other.remove_head()
-            self.insert_tail(x)
-
+        if self.is_empty():
+            self.head = other.head
+            self.tail = other.tail
+            self.length = other.tail
+        else:
+            self.tail.next = other.head
+            self.tail = other.tail
+            self.length = self.length + other.length
+        other.clear()
     # klasy O(1)
     # Węzły z listy other są przepinane do listy self na jej koniec.
     # Po zakończeniu operacji lista other ma być pusta.

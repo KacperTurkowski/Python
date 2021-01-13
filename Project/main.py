@@ -16,13 +16,13 @@ if not os.path.exists('.data/base.csv'):
 print("Witaj w wirtualnej Bazie danych")
 
 question = """Co chciałbyś zrobić? 
-    Aby wstawić obiekt do biblioteki wpisz: insert
-    Aby usunąć obiekt z biblioteki wpisz: delete
-    Aby utworzyć nową tabelę wpisz: create
-    Aby usunąć tabelę wpisz: delete_table
-    Aby wyszukać obiekt w bibliotece wpisz: search
-    Aby wypisać obiekty z biblioteki wpisz: list
-    Aby zakończyć działanie programu wpisz: end
+    insert: wstawianie obiektów do biblioteki
+    delete: usuwanie obiektów z biblioteki
+    create: tworzenie nowej tabeli
+    delete_table: usuwanie tabeli
+    search: wyszukiwanie obiektów w bibliotece
+    list: wypisywanie obiektów z biblioteki
+    end: wyłączanie programu
     
     :"""
 

@@ -1,3 +1,7 @@
+import io
+
+import prettytable as prettytable
+
 import pandas as pd
 import os
 
@@ -43,7 +47,7 @@ def insert(dataframe):  # wstawianie obiektu do biblioteki
         array[0].append(data)
 
     df = df.append(pd.DataFrame(array, columns=df.columns))  # Dodaje do dataframe nowy wiersz
-    df.to_csv(dataframe.adres_tabeli[table_index-1], index=False)  # zapisuje DataFrame do pliku
+    df.to_csv(dataframe.adres_tabeli[table_index-1], index=False, encoding="utf-8")  # zapisuje DataFrame do pliku
 
 
 def create(dataframe):  # tworzenie nowej tabeli
@@ -53,7 +57,7 @@ def create(dataframe):  # tworzenie nowej tabeli
         name = name.strip()
     address = '.data/'+name+'.csv'  # tworzy adres nowej tabeli
     dataframe = dataframe.append({'adres_tabeli': address, 'nazwa_tabeli': name}, ignore_index=True)  # dodaje nową tabelę do listy tabel
-    dataframe.to_csv('.data/base.csv', index=False)  # tworzy tabelę
+    dataframe.to_csv('.data/base.csv', index=False, encoding="utf-8")  # tworzy tabelę
 
     columns = ""
     question = """Podaj nowej nazwę kolumny 
@@ -84,8 +88,7 @@ def delete_table(dataframe):
     os.unlink(dataframe.adres_tabeli[table_index])
     dataframe = dataframe[:table_index].append(dataframe[table_index+1:])
 
-    dataframe.to_csv('.data/base.csv', index=False)
-
+    dataframe.to_csv('.data/base.csv', index=False, encoding="utf-8")
 
 
 def delete(dataframe):
@@ -102,10 +105,9 @@ def delete(dataframe):
         return
     print(df)
     if len(df.values) != 0:
-        row_index = read_int("\n\n\n\n\n\nAby wybrać record wpisz jego indeks: ", 0, (len(dataframe.nazwa_tabeli)))
+        row_index = read_int("\n\n\n\n\n\nAby wybrać record wpisz jego indeks: ", 0, (len(df.values)))
     df = df[:row_index].append(df[row_index+1:])
-    df.to_csv(dataframe.adres_tabeli[table_index - 1], index=False)
-
+    df.to_csv(dataframe.adres_tabeli[table_index - 1], index=False, encoding="utf-8")
 
 def search(dataframe):
     temp = input("Podaj frazę do wyszukania w bazie danych: ")
@@ -134,4 +136,9 @@ def to_list(dataframe):
     if len(df.values) == 0:
         print("Tabela jest pusta")
         return
-    print(df)
+    output = io.StringIO()
+    df.to_csv(output)
+    output.seek(0)
+    pt = prettytable.from_csv(output)
+    print(pt)
+

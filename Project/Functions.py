@@ -22,19 +22,22 @@ def read_int(str, min, max):
 
 
 def write_data(df):
-    for i in range(0, len(df.values)):    # wypisuje wszystkie możliwe tabele
-        print(str(i+1) + ". " + df[i])
+    output = io.StringIO()
+    df.to_csv(output, encoding="utf-8")
+    output.seek(0)
+    pt = prettytable.from_csv(output, encoding="utf-8")
+    print(pt)
 
 
 def insert(dataframe):  # wstawianie obiektu do biblioteki
     write_data(dataframe['nazwa_tabeli'])  # wypisuje wszystkie możliwe tabele
 
     if len(dataframe.nazwa_tabeli) != 0:  # Jeśli istnieją tabele
-        table_index = read_int("\n\n\n\n\n\nAby wybrać tabelę wpisz jej indeks: ", 1, (len(dataframe.nazwa_tabeli)))
+        table_index = read_int("\n\n\n\n\n\nAby wybrać tabelę wpisz jej indeks: ", 0, (len(dataframe.nazwa_tabeli)-1))
     elif len(dataframe.nazwa_tabeli) == 0:  # Jeśli nie ma tabel
         print("Brak tabel\n utwórz nową")
         return
-    df = pd.read_csv(dataframe.adres_tabeli[table_index-1])  # odczytuje tabelę z odpowiedniego pliku
+    df = pd.read_csv(dataframe.adres_tabeli[table_index], encoding="utf-8")  # odczytuje tabelę z odpowiedniego pliku
 
     array = [[]]
     for i in range(0, len(df.columns.values)):    # wypisuje wszystkie kolumny
@@ -47,7 +50,17 @@ def insert(dataframe):  # wstawianie obiektu do biblioteki
         array[0].append(data)
 
     df = df.append(pd.DataFrame(array, columns=df.columns))  # Dodaje do dataframe nowy wiersz
-    df.to_csv(dataframe.adres_tabeli[table_index-1], index=False, encoding="utf-8")  # zapisuje DataFrame do pliku
+    df.to_csv(dataframe.adres_tabeli[table_index], index=False, encoding="utf-8")  # zapisuje DataFrame do pliku
+
+
+def removeAccents(input_text):
+    strange = 'ŮôῡΒძěἊἦëĐᾇόἶἧзвŅῑἼźἓŉἐÿἈΌἢὶЁϋυŕŽŎŃğûλВὦėἜŤŨîᾪĝžἙâᾣÚκὔჯᾏᾢĠфĞὝŲŊŁČῐЙῤŌὭŏყἀхῦЧĎὍОуνἱῺèᾒῘᾘὨШūლἚύсÁóĒἍŷöὄЗὤἥბĔõὅῥŋБщἝξĢюᾫაπჟῸდΓÕűřἅгἰშΨńģὌΥÒᾬÏἴქὀῖὣᾙῶŠὟὁἵÖἕΕῨčᾈķЭτἻůᾕἫжΩᾶŇᾁἣჩαἄἹΖеУŹἃἠᾞåᾄГΠКíōĪὮϊὂᾱიżŦИὙἮὖÛĮἳφᾖἋΎΰῩŚἷРῈĲἁéὃσňİΙῠΚĸὛΪᾝᾯψÄᾭêὠÀღЫĩĈμΆᾌἨÑἑïოĵÃŒŸζჭᾼőΣŻçųøΤΑËņĭῙŘАдὗპŰἤცᾓήἯΐÎეὊὼΘЖᾜὢĚἩħĂыῳὧďТΗἺĬὰὡὬὫÇЩᾧñῢĻᾅÆßшδòÂчῌᾃΉᾑΦÍīМƒÜἒĴἿťᾴĶÊΊȘῃΟúχΔὋŴćŔῴῆЦЮΝΛῪŢὯнῬũãáἽĕᾗნᾳἆᾥйᾡὒსᾎĆрĀüСὕÅýფᾺῲšŵкἎἇὑЛვёἂΏθĘэᾋΧĉᾐĤὐὴιăąäὺÈФĺῇἘſგŜæῼῄĊἏØÉПяწДĿᾮἭĜХῂᾦωთĦлðὩზკίᾂᾆἪпἸиᾠώᾀŪāоÙἉἾρаđἌΞļÔβĖÝᾔĨНŀęᾤÓцЕĽŞὈÞუтΈέıàᾍἛśìŶŬȚĳῧῊᾟάεŖᾨᾉςΡმᾊᾸįᾚὥηᾛġÐὓłγľмþᾹἲἔбċῗჰხοἬŗŐἡὲῷῚΫŭᾩὸùᾷĹēრЯĄὉὪῒᾲΜᾰÌœĥტ'
+
+    ascii_replacements = 'UoyBdeAieDaoiiZVNiIzeneyAOiiEyyrZONgulVoeETUiOgzEaoUkyjAoGFGYUNLCiIrOOoqaKyCDOOUniOeiIIOSulEySAoEAyooZoibEoornBSEkGYOapzOdGOuraGisPngOYOOIikoioIoSYoiOeEYcAkEtIuiIZOaNaicaaIZEUZaiIaaGPKioIOioaizTIYIyUIifiAYyYSiREIaeosnIIyKkYIIOpAOeoAgYiCmAAINeiojAOYzcAoSZcuoTAEniIRADypUitiiIiIeOoTZIoEIhAYoodTIIIaoOOCSonyKaAsSdoACIaIiFIiMfUeJItaKEISiOuxDOWcRoiTYNLYTONRuaaIeinaaoIoysACRAuSyAypAoswKAayLvEaOtEEAXciHyiiaaayEFliEsgSaOiCAOEPYtDKOIGKiootHLdOzkiaaIPIIooaUaOUAIrAdAKlObEYiINleoOTEKSOTuTEeiaAEsiYUTiyIIaeROAsRmAAiIoiIgDylglMtAieBcihkoIrOieoIYuOouaKerYAOOiaMaIoht'
+
+    translator = str.maketrans(strange, ascii_replacements)
+
+    return input_text.translate(translator)
 
 
 def create(dataframe):  # tworzenie nowej tabeli
@@ -55,7 +68,10 @@ def create(dataframe):  # tworzenie nowej tabeli
     while name == '':  # Nazwa Tabeli nie może być pusta
         name = input("Podaj nazwę nowej tabeli: ")
         name = name.strip()
-    address = '.data/'+name+'.csv'  # tworzy adres nowej tabeli
+
+    asciidata = removeAccents(name)
+
+    address = '.data/'+asciidata+'.csv'  # tworzy adres nowej tabeli
     dataframe = dataframe.append({'adres_tabeli': address, 'nazwa_tabeli': name}, ignore_index=True)  # dodaje nową tabelę do listy tabel
     dataframe.to_csv('.data/base.csv', index=False, encoding="utf-8")  # tworzy tabelę
 
@@ -71,7 +87,7 @@ def create(dataframe):  # tworzenie nowej tabeli
             columns += temp + ','
 
     # zapis do pliku
-    f = open(address, 'w')
+    f = open(address, 'w', encoding="utf-8")
     f.write(columns[:-1])  # zapisuje bez ostatniego przecinka
     f.close()
 
@@ -80,13 +96,13 @@ def delete_table(dataframe):
     write_data(dataframe.nazwa_tabeli)  # wypisuje tabele
 
     if len(dataframe.nazwa_tabeli) != 0:  # Jeśli istnieją tabele
-        table_index = read_int("\n\n\n\n\n\nAby wybrać tabelę wpisz jej indeks: ", 1, (len(dataframe.nazwa_tabeli)))
+        table_index = read_int("\n\n\n\n\n\nAby wybrać tabelę wpisz jej indeks: ", 0, (len(dataframe.nazwa_tabeli)-1))
     elif len(dataframe.nazwa_tabeli) == 0:  # Jeśli nie ma tabel
         print("Brak tabel\n utwórz nową")
         return
     table_index -= 1
-    os.unlink(dataframe.adres_tabeli[table_index])
-    dataframe = dataframe[:table_index].append(dataframe[table_index+1:])
+    os.unlink(dataframe.adres_tabeli[table_index+1])
+    dataframe = dataframe[:table_index+1].append(dataframe[table_index+2:])
 
     dataframe.to_csv('.data/base.csv', index=False, encoding="utf-8")
 
@@ -95,11 +111,11 @@ def delete(dataframe):
     write_data(dataframe['nazwa_tabeli'])  # wypisuje wszystkie możliwe tabele
 
     if len(dataframe.nazwa_tabeli) != 0:  # Jeśli istnieją tabele
-        table_index = read_int("\n\n\n\n\n\nAby wybrać tabelę wpisz jej indeks: ", 1, (len(dataframe.nazwa_tabeli)))
+        table_index = read_int("\n\n\n\n\n\nAby wybrać tabelę wpisz jej indeks: ", 0, (len(dataframe.nazwa_tabeli)-1))
     elif len(dataframe.nazwa_tabeli) == 0:  # Jeśli nie ma tabel
         print("Brak tabel\n utwórz nową")
         return
-    df = pd.read_csv(dataframe.adres_tabeli[table_index - 1])  # odczytuje tabelę z odpowiedniego pliku
+    df = pd.read_csv(dataframe.adres_tabeli[table_index], encoding="utf-8")  # odczytuje tabelę z odpowiedniego pliku
     if len(df.values) == 0:
         print("Ta tabela jest pusta")
         return
@@ -107,14 +123,15 @@ def delete(dataframe):
     if len(df.values) != 0:
         row_index = read_int("\n\n\n\n\n\nAby wybrać record wpisz jego indeks: ", 0, (len(df.values)))
     df = df[:row_index].append(df[row_index+1:])
-    df.to_csv(dataframe.adres_tabeli[table_index - 1], index=False, encoding="utf-8")
+    df.to_csv(dataframe.adres_tabeli[table_index], index=False, encoding="utf-8")
+
 
 def search(dataframe):
     temp = input("Podaj frazę do wyszukania w bazie danych: ")
     result = []
 
     for tables in dataframe.values:
-        df_temp = pd.read_csv(tables[0])
+        df_temp = pd.read_csv(tables[0], encoding="utf-8")
         for i in df_temp.columns:
             df_column_temp = pd.DataFrame(df_temp[i])
             for j in range(len(df_column_temp.values)):
@@ -128,17 +145,17 @@ def to_list(dataframe):
     write_data(dataframe['nazwa_tabeli'])  # wypisuje wszystkie możliwe tabele
 
     if len(dataframe.nazwa_tabeli) != 0:  # Jeśli istnieją tabele
-        table_index = read_int("\n\n\n\n\n\nAby wybrać tabelę wpisz jej indeks: ", 1, (len(dataframe.nazwa_tabeli)))
+        table_index = read_int("\n\n\n\n\n\nAby wybrać tabelę wpisz jej indeks: ", 0, (len(dataframe.nazwa_tabeli)-1))
     elif len(dataframe.nazwa_tabeli) == 0:  # Jeśli nie ma tabel
         print("Brak tabel\n utwórz nową")
         return
-    df = pd.read_csv(dataframe.adres_tabeli[table_index - 1])  # odczytuje tabelę z odpowiedniego pliku
+    df = pd.read_csv(dataframe.adres_tabeli[table_index], encoding="utf-8")  # odczytuje tabelę z odpowiedniego pliku
     if len(df.values) == 0:
         print("Tabela jest pusta")
         return
     output = io.StringIO()
-    df.to_csv(output)
+    df.to_csv(output, encoding="utf-8")
     output.seek(0)
-    pt = prettytable.from_csv(output)
+    pt = prettytable.from_csv(output, encoding="utf-8")
     print(pt)
 

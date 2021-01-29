@@ -1,11 +1,11 @@
 import io
-
-import prettytable as prettytable
-
+import prettytable
 import pandas as pd
 import os
 
+
 def read_int(str, min, max):
+    """funkcja wczytuje z konsoli int w przedziale (min,max) prezentując zapytanie które jest zapisane w str."""
     check = False
     while not check:
         x = input(str)
@@ -22,6 +22,7 @@ def read_int(str, min, max):
 
 
 def write_data(df):
+    """wypisuje dane z podanego w argumencie dataframe"""
     output = io.StringIO()
     df.to_csv(output, encoding="utf-8")
     output.seek(0)
@@ -30,6 +31,7 @@ def write_data(df):
 
 
 def insert(dataframe):  # wstawianie obiektu do biblioteki
+    """w tej funkcji opisana jest funkcja dodawania recordów do bazy danych"""
     write_data(dataframe['nazwa_tabeli'])  # wypisuje wszystkie możliwe tabele
 
     if len(dataframe.nazwa_tabeli) != 0:  # Jeśli istnieją tabele
@@ -54,6 +56,7 @@ def insert(dataframe):  # wstawianie obiektu do biblioteki
 
 
 def removeAccents(input_text):
+    """funkcja zamienia znaki z kodowania UTF-8 na ascii przy nazwach pliku"""
     strange = 'ŮôῡΒძěἊἦëĐᾇόἶἧзвŅῑἼźἓŉἐÿἈΌἢὶЁϋυŕŽŎŃğûλВὦėἜŤŨîᾪĝžἙâᾣÚκὔჯᾏᾢĠфĞὝŲŊŁČῐЙῤŌὭŏყἀхῦЧĎὍОуνἱῺèᾒῘᾘὨШūლἚύсÁóĒἍŷöὄЗὤἥბĔõὅῥŋБщἝξĢюᾫაπჟῸდΓÕűřἅгἰშΨńģὌΥÒᾬÏἴქὀῖὣᾙῶŠὟὁἵÖἕΕῨčᾈķЭτἻůᾕἫжΩᾶŇᾁἣჩαἄἹΖеУŹἃἠᾞåᾄГΠКíōĪὮϊὂᾱიżŦИὙἮὖÛĮἳφᾖἋΎΰῩŚἷРῈĲἁéὃσňİΙῠΚĸὛΪᾝᾯψÄᾭêὠÀღЫĩĈμΆᾌἨÑἑïოĵÃŒŸζჭᾼőΣŻçųøΤΑËņĭῙŘАдὗპŰἤცᾓήἯΐÎეὊὼΘЖᾜὢĚἩħĂыῳὧďТΗἺĬὰὡὬὫÇЩᾧñῢĻᾅÆßшδòÂчῌᾃΉᾑΦÍīМƒÜἒĴἿťᾴĶÊΊȘῃΟúχΔὋŴćŔῴῆЦЮΝΛῪŢὯнῬũãáἽĕᾗნᾳἆᾥйᾡὒსᾎĆрĀüСὕÅýფᾺῲšŵкἎἇὑЛვёἂΏθĘэᾋΧĉᾐĤὐὴιăąäὺÈФĺῇἘſგŜæῼῄĊἏØÉПяწДĿᾮἭĜХῂᾦωთĦлðὩზკίᾂᾆἪпἸиᾠώᾀŪāоÙἉἾρаđἌΞļÔβĖÝᾔĨНŀęᾤÓцЕĽŞὈÞუтΈέıàᾍἛśìŶŬȚĳῧῊᾟάεŖᾨᾉςΡმᾊᾸįᾚὥηᾛġÐὓłγľмþᾹἲἔбċῗჰხοἬŗŐἡὲῷῚΫŭᾩὸùᾷĹēრЯĄὉὪῒᾲΜᾰÌœĥტ'
 
     ascii_replacements = 'UoyBdeAieDaoiiZVNiIzeneyAOiiEyyrZONgulVoeETUiOgzEaoUkyjAoGFGYUNLCiIrOOoqaKyCDOOUniOeiIIOSulEySAoEAyooZoibEoornBSEkGYOapzOdGOuraGisPngOYOOIikoioIoSYoiOeEYcAkEtIuiIZOaNaicaaIZEUZaiIaaGPKioIOioaizTIYIyUIifiAYyYSiREIaeosnIIyKkYIIOpAOeoAgYiCmAAINeiojAOYzcAoSZcuoTAEniIRADypUitiiIiIeOoTZIoEIhAYoodTIIIaoOOCSonyKaAsSdoACIaIiFIiMfUeJItaKEISiOuxDOWcRoiTYNLYTONRuaaIeinaaoIoysACRAuSyAypAoswKAayLvEaOtEEAXciHyiiaaayEFliEsgSaOiCAOEPYtDKOIGKiootHLdOzkiaaIPIIooaUaOUAIrAdAKlObEYiINleoOTEKSOTuTEeiaAEsiYUTiyIIaeROAsRmAAiIoiIgDylglMtAieBcihkoIrOieoIYuOouaKerYAOOiaMaIoht'
@@ -64,6 +67,7 @@ def removeAccents(input_text):
 
 
 def create(dataframe):  # tworzenie nowej tabeli
+    """w tej funkcji opisana jest funkcja dodawania tabeli do bazy danych"""
     name = ''
     while name == '':  # Nazwa Tabeli nie może być pusta
         name = input("Podaj nazwę nowej tabeli: ")
@@ -93,6 +97,7 @@ def create(dataframe):  # tworzenie nowej tabeli
 
 
 def delete_table(dataframe):
+    """w tej funkcji opisana jest funkcja usuwania tabeli z bazy danych"""
     write_data(dataframe.nazwa_tabeli)  # wypisuje tabele
 
     if len(dataframe.nazwa_tabeli) != 0:  # Jeśli istnieją tabele
@@ -108,6 +113,7 @@ def delete_table(dataframe):
 
 
 def delete(dataframe):
+    """w tej funkcji opisana jest funkcja usuwania recordu z bazy danych"""
     write_data(dataframe['nazwa_tabeli'])  # wypisuje wszystkie możliwe tabele
 
     if len(dataframe.nazwa_tabeli) != 0:  # Jeśli istnieją tabele
@@ -127,6 +133,7 @@ def delete(dataframe):
 
 
 def search(dataframe):
+    """w tej funkcji opisana jest funkcja wyszukiwania recordu z bazy danych"""
     temp = input("Podaj frazę do wyszukania w bazie danych: ")
     result = []
 
@@ -142,6 +149,7 @@ def search(dataframe):
 
 
 def to_list(dataframe):
+    """w tej funkcji opisana jest funkcja wypisywania tabeli z bazy danych"""
     write_data(dataframe['nazwa_tabeli'])  # wypisuje wszystkie możliwe tabele
 
     if len(dataframe.nazwa_tabeli) != 0:  # Jeśli istnieją tabele
